@@ -10,6 +10,15 @@ module Jekyll
         @slug = slug
         @date = Time.parse(date)
       end
+      
+      def looseCompare(post)
+        return false unless post.slug == self.slug
+        return false unless post.date.year == self.date.year
+        return false unless post.date.month == self.date.month
+        return false unless post.date.day == self.date.day
+        return true
+      end
+      
     end
 
     class PostUrl < Liquid::Tag
@@ -23,7 +32,7 @@ module Jekyll
         site = context.registers[:site]
 
         site.posts.each do |p|
-          if p.slug == @post.slug and p.date.year == @post.date.year and p.date.month == @post.date.month and p.date.day == @post.date.day
+          if @post.looseCompare(p)
             return p.url
           end
         end
